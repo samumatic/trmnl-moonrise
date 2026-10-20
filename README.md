@@ -19,7 +19,7 @@ When the moon rises and sets today at your location, for [TRMNL](https://trmnl.c
 - Moonrise and moonset for your location and day, to the minute
 - The moon drawn in its phase (mirrored south of the equator), with the phase name, how much is lit and its age
 - A day bar from midnight to midnight: moon above the horizon in black, night in gray, now marked
-- Next full and new moon with date and time, and a strip with the moon for the next 7 days
+- Next full and new moon with date and time, and the next 7 days with moon, moonrise and moonset
 - The far north and south: days without a moonrise or moonset, or with the moon up or down all day
 - German or English (or follow the TRMNL account language), 24-hour or 12-hour times
 - All four TRMNL layouts (full, half horizontal, half vertical, quadrant), adapting to portrait and to TRMNL X

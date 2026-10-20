@@ -57,6 +57,12 @@ RSpec.describe 'Moonrise & Moonset' do
       expect(days.find { it['phase'] == 'full' }['day']).to eq(26)
     end
 
+    it "has each day's moonrise and moonset, across the switch to winter time" do
+      days = moon['days']
+      expect(days.first.values_at('rise', 'set').map { it['t24'] }).to eq(%w[16:17 01:34])
+      expect(days[4].values_at('day', 'rise', 'set').then { [it[0], it[1]['t24'], it[2]['t24']] }).to eq([25, '16:04', '05:54'])
+    end
+
     it 'asks Open-Meteo for the sun at the same place and time zone' do
       url = trmnl.transform(now:, mocks:, custom_fields:, variables:).requests.first[:url]
       expect(url).to include('latitude=52.5200', 'longitude=13.4050', 'timezone=Europe%2FBerlin', 'timeformat=unixtime')

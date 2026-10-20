@@ -272,6 +272,12 @@ def sun_spans(meteo, start, end):
     return None
 
 
+def day_bounds(day, tz):
+    """Local midnight to midnight (23 or 25 hours on a DST change day)."""
+    nxt = day + timedelta(days=1)
+    return datetime(day.year, day.month, day.day, tzinfo=tz), datetime(nxt.year, nxt.month, nxt.day, tzinfo=tz)
+
+
 def moon_for(lat, lon, tz, now, meteo=None):
     jd = jd_of(now)
     lit, elong, dist = illumination(jd)
@@ -281,9 +287,7 @@ def moon_for(lat, lon, tz, now, meteo=None):
 
     local = now.astimezone(tz)
     day = local.date()
-    start = datetime(day.year, day.month, day.day, tzinfo=tz)
-    nxt = day + timedelta(days=1)
-    end = datetime(nxt.year, nxt.month, nxt.day, tzinfo=tz)
+    start, end = day_bounds(day, tz)
     j0, j1 = jd_of(start), jd_of(end)
     pct = lambda jdx: round((jdx - j0) / (j1 - j0) * 100, 2)
 
@@ -308,14 +312,17 @@ def moon_for(lat, lon, tz, now, meteo=None):
         return {"phase": PHASES[kind], **day_of(at), **clock(at), "in_days": (at.date() - day).days}
 
     upcoming = [(j, k) for j, k in phases if j > jd]
+    local_clock = lambda j: clock(dt_of(j).astimezone(tz))
     days = []
     for n in range(1, 8):
-        d = day + timedelta(days=n)
-        noon = datetime(d.year, d.month, d.day, 12, tzinfo=tz)
-        d0, d1 = jd_of(noon) - 0.5, jd_of(noon) + 0.5
-        dl, de, _ = illumination(jd_of(noon))
-        days.append({**day_of(noon), "illum": round(dl * 100), "disc": disc_path(dl, de < 180, south),
-                     "phase": next((PHASES[k] for j, k in phases if d0 <= j < d1), None)})
+        d0, d1 = (jd_of(b) for b in day_bounds(day + timedelta(days=n), tz))
+        dl, de, _ = illumination((d0 + d1) / 2)
+        d_rises, d_sets, _ = rise_set(lat, lon, d0, d1)
+        days.append({**day_of(dt_of((d0 + d1) / 2).astimezone(tz)), "illum": round(dl * 100),
+                     "disc": disc_path(dl, de < 180, south),
+                     "phase": next((PHASES[k] for j, k in phases if d0 <= j < d1), None),
+                     "rise": local_clock(d_rises[0]) if d_rises else None,
+                     "set": local_clock(d_sets[0]) if d_sets else None})
 
     return {
         "ok": True,
@@ -323,8 +330,8 @@ def moon_for(lat, lon, tz, now, meteo=None):
         "lat": round(lat, 2), "lon": round(lon, 2),
         "illum": round(lit * 100), "age": round(jd - prev_new, 1), "phase": name, "waxing": waxing,
         "disc": disc_path(lit, waxing, south),
-        "rise": {**clock(dt_of(rises[0]).astimezone(tz)), "pct": pct(rises[0])} if rises else None,
-        "set": {**clock(dt_of(sets[0]).astimezone(tz)), "pct": pct(sets[0])} if sets else None,
+        "rise": {**local_clock(rises[0]), "pct": pct(rises[0])} if rises else None,
+        "set": {**local_clock(sets[0]), "pct": pct(sets[0])} if sets else None,
         "all_day": "up" if up and not events else "down" if not events else None,
         "up": [[pct(a), round(pct(b) - pct(a), 2)] for a, b in spans],
         "night": None if night is None else

@@ -109,7 +109,8 @@
           <svg class="mn-disc__svg absolute" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
         </div>
         <span class="label label--small{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
-        <span class="label label--small">{% if mn_lang == "de" %}{{ mn_d.illum }} %{% else %}{{ mn_d.illum }}%{% endif %}</span>
+        <span class="label label--small">↑ {% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
+        <span class="label label--small">↓ {% if mn_d.set %}{{ mn_d.set[mn_t] }}{% else %}–{% endif %}</span>
       </div>
     {% endfor %}
   </div>
