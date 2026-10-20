@@ -1,0 +1,160 @@
+{% assign mn_fields = trmnl.plugin_settings.custom_fields_values %}
+{% assign mn_lang = mn_fields.language | default: "auto" | downcase %}
+{% if mn_lang != "de" and mn_lang != "en" %}
+  {% assign mn_locale = trmnl.user.locale | default: "en" | slice: 0, 2 | downcase %}
+  {% if mn_locale == "de" %}{% assign mn_lang = "de" %}{% else %}{% assign mn_lang = "en" %}{% endif %}
+{% endif %}
+{% assign mn_clock = mn_fields.time_format | default: "auto" | downcase %}
+{% if mn_clock == "12" or mn_clock == "12-hour" %}{% assign mn_t = "t12" %}
+{% elsif mn_clock == "24" or mn_clock == "24-hour" %}{% assign mn_t = "t24" %}
+{% elsif mn_lang == "en" %}{% assign mn_t = "t12" %}{% else %}{% assign mn_t = "t24" %}{% endif %}
+
+{% comment %} Words: phase names by key, then weekdays (Monday first) and months. {% endcomment %}
+{% if mn_lang == "de" %}
+  {% assign mn_wd = "Mo,Di,Mi,Do,Fr,Sa,So" | split: "," %}
+  {% assign mn_mon = "Jan.,Feb.,März,Apr.,Mai,Juni,Juli,Aug.,Sep.,Okt.,Nov.,Dez." | split: "," %}
+  {% assign mn_w_rise = "Mondaufgang" %}{% assign mn_w_set = "Monduntergang" %}
+  {% assign mn_w_rise_short = "Aufgang" %}{% assign mn_w_set_short = "Untergang" %}
+  {% assign mn_w_full = "Vollmond" %}{% assign mn_w_new = "Neumond" %}
+  {% assign mn_w_lit = "beleuchtet" %}{% assign mn_w_age = "Tage alt" %}{% assign mn_w_days = "Tage" %}
+  {% assign mn_w_no_rise = "Heute kein Mondaufgang" %}{% assign mn_w_no_set = "Heute kein Monduntergang" %}
+  {% assign mn_w_up = "Den ganzen Tag über dem Horizont" %}{% assign mn_w_down = "Den ganzen Tag unter dem Horizont" %}
+  {% assign mn_w_title = "Mond" %}{% assign mn_w_supermoon = "Supermond" %}
+{% else %}
+  {% assign mn_wd = "Mon,Tue,Wed,Thu,Fri,Sat,Sun" | split: "," %}
+  {% assign mn_mon = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec" | split: "," %}
+  {% assign mn_w_rise = "Moonrise" %}{% assign mn_w_set = "Moonset" %}
+  {% assign mn_w_rise_short = "Rise" %}{% assign mn_w_set_short = "Set" %}
+  {% assign mn_w_full = "Full moon" %}{% assign mn_w_new = "New moon" %}
+  {% assign mn_w_lit = "lit" %}{% assign mn_w_age = "days old" %}{% assign mn_w_days = "days" %}
+  {% assign mn_w_no_rise = "No moonrise today" %}{% assign mn_w_no_set = "No moonset today" %}
+  {% assign mn_w_up = "Above the horizon all day" %}{% assign mn_w_down = "Below the horizon all day" %}
+  {% assign mn_w_title = "Moon" %}{% assign mn_w_supermoon = "Supermoon" %}
+{% endif %}
+
+{% capture mn_phase %}{% if mn_lang == "de" %}{% case moon.phase %}
+  {% when "new" %}Neumond{% when "waxing_crescent" %}Zunehmende Sichel{% when "first_quarter" %}Erstes Viertel
+  {% when "waxing_gibbous" %}Zunehmender Mond{% when "full" %}Vollmond{% when "waning_gibbous" %}Abnehmender Mond
+  {% when "last_quarter" %}Letztes Viertel{% else %}Abnehmende Sichel{% endcase %}
+{% else %}{% case moon.phase %}
+  {% when "new" %}New Moon{% when "waxing_crescent" %}Waxing Crescent{% when "first_quarter" %}First Quarter
+  {% when "waxing_gibbous" %}Waxing Gibbous{% when "full" %}Full Moon{% when "waning_gibbous" %}Waning Gibbous
+  {% when "last_quarter" %}Last Quarter{% else %}Waning Crescent{% endcase %}
+{% endif %}{% endcapture %}
+{% assign mn_phase = mn_phase | strip %}
+
+{% if mn_lang == "de" %}
+  {% capture mn_detail %}{{ moon.illum }} % {{ mn_w_lit }} · {{ moon.age | replace: ".", "," }} {{ mn_w_age }}{% if moon.supermoon %} · {{ mn_w_supermoon }}{% endif %}{% endcapture %}
+  {% capture mn_detail_short %}{{ moon.illum }} % · {{ moon.age | replace: ".", "," }} {{ mn_w_days }}{% endcapture %}
+{% else %}
+  {% capture mn_detail %}{{ moon.illum }}% {{ mn_w_lit }} · {{ moon.age }} {{ mn_w_age }}{% if moon.supermoon %} · {{ mn_w_supermoon }}{% endif %}{% endcapture %}
+  {% capture mn_detail_short %}{{ moon.illum }}% · {{ moon.age }} {{ mn_w_days }}{% endcapture %}
+{% endif %}
+
+{% comment %} Times as "16:04", or "4:04" with a small "PM". {% endcomment %}
+{% capture mn_rise %}{% if moon.rise %}{% assign mn_x = moon.rise[mn_t] | split: " " %}{{ mn_x[0] }}{% if mn_x[1] %}<span class="label">{{ mn_x[1] }}</span>{% endif %}{% else %}–{% endif %}{% endcapture %}
+{% capture mn_set %}{% if moon.set %}{% assign mn_x = moon.set[mn_t] | split: " " %}{{ mn_x[0] }}{% if mn_x[1] %}<span class="label">{{ mn_x[1] }}</span>{% endif %}{% else %}–{% endif %}{% endcapture %}
+{% if moon.all_day == "up" %}{% assign mn_note = mn_w_up %}
+{% elsif moon.all_day == "down" %}{% assign mn_note = mn_w_down %}
+{% elsif moon.rise == nil %}{% assign mn_note = mn_w_no_rise %}
+{% elsif moon.set == nil %}{% assign mn_note = mn_w_no_set %}
+{% else %}{% assign mn_note = "" %}{% endif %}
+
+{% comment %} "Mo 26. Okt. · 05:12" / "Mon, Oct 26 · 5:12 AM" {% endcomment %}
+{% capture mn_full_date %}{% if moon.full %}{% assign mn_i = moon.full.month | minus: 1 %}{% if mn_lang == "de" %}{{ mn_wd[moon.full.wd] }} {{ moon.full.day }}. {{ mn_mon[mn_i] }}{% else %}{{ mn_wd[moon.full.wd] }}, {{ mn_mon[mn_i] }} {{ moon.full.day }}{% endif %}{% endif %}{% endcapture %}
+{% capture mn_new_date %}{% if moon.new %}{% assign mn_i = moon.new.month | minus: 1 %}{% if mn_lang == "de" %}{{ mn_wd[moon.new.wd] }} {{ moon.new.day }}. {{ mn_mon[mn_i] }}{% else %}{{ mn_wd[moon.new.wd] }}, {{ mn_mon[mn_i] }} {{ moon.new.day }}{% endif %}{% endif %}{% endcapture %}
+{% assign mn_full_time = moon.full[mn_t] %}{% assign mn_new_time = moon.new[mn_t] %}
+
+{% comment %} Title bar: the location name, or the coordinates. {% endcomment %}
+{% assign mn_place = mn_fields.location_name | strip %}
+{% if mn_place == blank and moon.ok %}
+  {% if moon.lat < 0 %}{% assign mn_ns = "S" %}{% assign mn_la = moon.lat | abs %}{% else %}{% assign mn_ns = "N" %}{% assign mn_la = moon.lat %}{% endif %}
+  {% if moon.lon < 0 %}{% assign mn_ew = "W" %}{% assign mn_lo = moon.lon | abs %}{% else %}{% assign mn_ew = "E" %}{% assign mn_lo = moon.lon %}{% endif %}
+  {% capture mn_place %}{{ mn_la }}° {{ mn_ns }}, {{ mn_lo }}° {{ mn_ew }}{% endcapture %}
+{% endif %}
+{% capture mn_title_bar %}
+  <div class="title_bar">
+    <svg class="image mn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3a9 9 0 1 0 6 15.7A9.5 9.5 0 0 1 15 3z" fill="currentColor"/></svg>
+    <span class="title">{{ mn_w_title }}</span>
+    <span class="instance">{{ mn_place }}</span>
+  </div>
+{% endcapture %}
+
+{% comment %} The moon: the dark side is the Framework's gray (dithered where a screen has no gray), the lit side drawn over it. {% endcomment %}
+{% capture mn_disc %}
+  <div class="mn-disc mn-disc--main relative rounded--full bg--gray-30">
+    <svg class="mn-disc__svg absolute" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ moon.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="49.2"/></svg>
+  </div>
+{% endcapture %}
+
+{% comment %} The day from midnight to midnight: night in gray, the moon above the horizon in black, now marked above. {% endcomment %}
+{% capture mn_bar %}
+  <div class="mn-day w--full">
+    <div class="mn-bar relative w--full">
+      {% for mn_s in moon.night %}<div class="mn-bar__night absolute bg--gray-60" style="left:{{ mn_s[0] }}%;width:{{ mn_s[1] }}%"></div>{% endfor %}
+      {% for mn_s in moon.up %}<div class="mn-bar__up absolute bg--black" style="left:{{ mn_s[0] }}%;width:{{ mn_s[1] }}%"></div>{% endfor %}
+    </div>
+    <div class="mn-bar__now relative w--full"><svg class="absolute" style="left:{{ moon.now_pct }}%" viewBox="0 0 10 8" aria-hidden="true"><path d="M5 0L10 8H0Z" fill="currentColor"/></svg></div>
+    <div class="flex flex--row flex--between w--full gap--none">
+      <span class="label label--small">0</span><span class="label label--small">6</span><span class="label label--small">12</span><span class="label label--small">18</span><span class="label label--small">24</span>
+    </div>
+  </div>
+{% endcapture %}
+
+{% capture mn_strip %}
+  <div class="flex flex--row flex--between w--full gap--none mn-strip">
+    {% for mn_d in moon.days %}
+      <div class="flex flex--col gap--xsmall mn-strip__day">
+        <div class="mn-disc mn-disc--small relative rounded--full bg--gray-30">
+          <svg class="mn-disc__svg absolute" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
+        </div>
+        <span class="label label--small{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
+        <span class="label label--small">{% if mn_lang == "de" %}{{ mn_d.illum }} %{% else %}{{ mn_d.illum }}%{% endif %}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endcapture %}
+
+{% comment %} No location (or the transform failed): a sleeping moon and one line. {% endcomment %}
+{% capture mn_empty %}
+  <div class="layout layout--col layout--center">
+    <svg class="mn-empty" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 8a24 24 0 1 0 16 41A26 26 0 0 1 40 8z"/><path d="M28 34q3 3 6 0"/><path d="M48 12h6l-6 7h6"/></svg>
+    <span class="title">{% if mn_lang == "de" %}Der Mond braucht einen Ort{% else %}The moon needs a place{% endif %}</span>
+    <span class="description">{% if mn_lang == "de" %}Wähle in den Einstellungen deinen Standort.{% else %}Choose your location in the plugin settings.{% endif %}</span>
+  </div>
+{% endcapture %}
+
+<style>
+  /* bg-- classes set their own text colour: the rim takes the page's ink again. */
+  .mn-disc.mn-disc{flex:none;color:inherit}
+  .mn-disc__svg{inset:0;width:100%;height:100%;overflow:visible}
+  .mn-lit{fill:#fff}
+  .mn-rim{fill:none;stroke:currentColor;stroke-width:1.6}
+  .mn-disc--small{width:30px;height:30px}
+  .mn-disc--small .mn-rim{stroke-width:4}
+  .mn-time{white-space:nowrap}
+  .view--full .mn-disc--main{width:230px;height:230px}
+  .view--half_horizontal .mn-disc--main{width:150px;height:150px}
+  .view--half_vertical .mn-disc--main{width:170px;height:170px}
+  .view--quadrant .mn-disc--main{width:120px;height:120px}
+  .screen--portrait .view--full .mn-disc--main{width:260px;height:260px}
+  .screen--portrait .view--half_horizontal .mn-disc--main{width:120px;height:120px}
+  .screen--lg .view--full .mn-disc--main{width:330px;height:330px}
+  .screen--lg.screen--portrait .view--full .mn-disc--main{width:400px;height:400px}
+  .screen--lg .view--half_horizontal .mn-disc--main{width:220px;height:220px}
+  .screen--lg.screen--portrait .view--half_horizontal .mn-disc--main{width:170px;height:170px}
+  .screen--lg .view--half_vertical .mn-disc--main{width:250px;height:250px}
+  .screen--lg .view--quadrant .mn-disc--main{width:170px;height:170px}
+  .screen--lg .mn-disc--small{width:44px;height:44px}
+  .screen--portrait .view--quadrant .mn-disc--main{width:90px;height:90px}
+  .screen--lg.screen--portrait .view--quadrant .mn-disc--main{width:150px;height:150px}
+  .screen--portrait .view--full .mn-info,.screen--portrait .view--quadrant .mn-info{flex-grow:0}
+  .mn-bar{height:18px;outline:2px solid currentColor;outline-offset:-2px;overflow:hidden}
+  .mn-bar__night{top:0;bottom:0}
+  .mn-bar__up{top:5px;bottom:5px}
+  .mn-bar__now{height:9px}
+  .mn-bar__now svg{top:1px;width:12px;height:8px;transform:translateX(-50%)}
+  .mn-icon{width:24px;height:24px}
+  .mn-empty{width:96px;height:96px}
+  .mn-strip__day{align-items:center}
+</style>

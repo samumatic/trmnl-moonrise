@@ -1,0 +1,57 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+framework_version: latest
+serverless_language: python
+refresh_interval_floor: '30'
+polling_url: "{%- assign mn_lat = lat_lon | default: \"52.5200,13.4050\" | split: \",\" | first | strip -%}{%- assign mn_lon = lat_lon | default: \"52.5200,13.4050\" | split: \",\" | last | strip -%}{%- assign mn_tz = trmnl.user.time_zone_iana | default: \"auto\" | url_encode -%}https://api.open-meteo.com/v1/forecast?latitude={{ mn_lat }}&longitude={{ mn_lon }}&daily=sunrise,sunset,daylight_duration&timezone={{ mn_tz }}&forecast_days=2&timeformat=unixtime"
+polling_headers: ''
+polling_body: ''
+oauth_enabled: 'false'
+oauth_pkce_enabled: 'no'
+custom_fields:
+- keyname: lat_lon
+  field_type: lat_lon
+  name: Location
+  description: Search for a city or postal code, or enter coordinates as "lat,lon". Moonrise and moonset depend on where you are.
+  description-de: Ort oder Postleitzahl suchen, oder Koordinaten als "lat,lon" eingeben. Mondauf- und -untergang hängen vom Ort ab.
+  default: 52.5200,13.4050
+- keyname: location_name
+  field_type: string
+  name: Location name
+  description: Shown in the title bar, for example your city. Left empty, the coordinates are shown.
+  description-de: Wird in der Titelleiste angezeigt, zum Beispiel deine Stadt. Leer gelassen stehen dort die Koordinaten.
+  placeholder: Berlin
+  optional: true
+- keyname: language
+  field_type: select
+  name: Language
+  description: Auto follows the language of your TRMNL account.
+  description-de: Auto folgt der Sprache deines TRMNL-Kontos.
+  options:
+  - Auto: auto
+  - Deutsch: de
+  - English: en
+  default: auto
+- keyname: time_format
+  field_type: select
+  name: Time format
+  description: Auto shows 24-hour times in German and 12-hour times in English.
+  description-de: Auto zeigt auf Deutsch 24 Stunden und auf Englisch 12 Stunden.
+  options:
+  - Auto: auto
+  - 24-hour: '24'
+  - 12-hour: '12'
+  default: auto
+- keyname: about
+  field_type: author_bio
+  name: About This Plugin
+  category: nature,environment
+  github_url: https://github.com/samumatic/trmnl-moon
+  description: 'Shows when the moon rises and sets today at your location, with a drawn moon in its current phase, how much of it is lit and how old it is. A bar across the day shows when the moon is above the horizon and when it is night, so you can see at a glance whether you will catch it in the dark. The full view adds the next full and new moon and a strip with the moon for the coming week. It also handles the far north and south, where the moon can stay up or stay away all day. Available in German or English, with 24-hour or 12-hour times.<br><br>Everything about the moon is computed by the plugin itself, so it needs no account, no API key and no moon service. The positions follow Jean Meeus, <i>Astronomical Algorithms</i> (2nd ed.), and were checked against the <a href="https://aa.usno.navy.mil/data/RS_OneDay" class="underline" target="_blank">US Naval Observatory</a>: rise and set within a minute. Sunrise and sunset for the day bar come from <a href="https://open-meteo.com/" class="underline" target="_blank">Weather data by Open-Meteo.com</a> (CC BY 4.0). Not affiliated with the USNO or Open-Meteo.<br><br>Source code, feedback and bug reports: <a href="https://github.com/samumatic/trmnl-moon" class="underline" target="_blank">GitHub</a>'
+name: Moonrise & Moonset
+description: Moon phase, moonrise & moonset
+refresh_interval: 60

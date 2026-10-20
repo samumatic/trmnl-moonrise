@@ -1,0 +1,33 @@
+{
+    "latitude": 52.512604,
+    "longitude": 13.419517,
+    "generationtime_ms": 0.011682510375976562,
+    "utc_offset_seconds": 7200,
+    "timezone": "Europe/Berlin",
+    "timezone_abbreviation": "GMT+2",
+    "elevation": 37.0,
+    "daily_units": {
+        "time": "unixtime",
+        "sunrise": "unixtime",
+        "sunset": "unixtime",
+        "daylight_duration": "s"
+    },
+    "daily": {
+        "time": [
+            1792447200,
+            1792533600
+        ],
+        "sunrise": [
+            1792474834,
+            1792561343
+        ],
+        "sunset": [
+            1792512048,
+            1792598319
+        ],
+        "daylight_duration": [
+            37227.13,
+            36989.05
+        ]
+    }
+}

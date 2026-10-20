@@ -1,0 +1,16 @@
+{% if moon.ok %}
+<div class="layout layout--row portrait:layout--col gap--medium">
+  {{ mn_disc }}
+  <div class="mn-info flex flex--col flex--left portrait:flex--center-x gap--xsmall grow">
+    <span class="title lg:title--large">{{ mn_phase }}</span>
+    <span class="description lg:description--large">{{ mn_detail_short }}</span>
+    <div class="flex flex--row gap--medium">
+      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_rise_short }}</span><span class="value value--xsmall lg:value--small value--tnums mn-time">{{ mn_rise }}</span></div>
+      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_set_short }}</span><span class="value value--xsmall lg:value--small value--tnums mn-time">{{ mn_set }}</span></div>
+    </div>
+  </div>
+</div>
+{% else %}
+{{ mn_empty }}
+{% endif %}
+{{ mn_title_bar }}

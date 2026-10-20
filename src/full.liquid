@@ -1,0 +1,25 @@
+{% if moon.ok %}
+<div class="layout layout--col gap--medium">
+  <div class="flex flex--row portrait:flex--col gap--xlarge w--full grow">
+    {{ mn_disc }}
+    <div class="mn-info flex flex--col flex--left gap--small grow">
+      <span class="title title--xlarge lg:title--xxlarge">{{ mn_phase }}</span>
+      <span class="description description--large lg:description--xlarge">{{ mn_detail }}</span>
+      <div class="flex flex--row gap--xlarge">
+        <div class="flex flex--col flex--left gap--none"><span class="label lg:label--large">{{ mn_w_rise }}</span><span class="value value--large lg:value--xlarge value--tnums mn-time">{{ mn_rise }}</span></div>
+        <div class="flex flex--col flex--left gap--none"><span class="label lg:label--large">{{ mn_w_set }}</span><span class="value value--large lg:value--xlarge value--tnums mn-time">{{ mn_set }}</span></div>
+      </div>
+      {% if mn_note != "" %}<span class="label label--inverted">{{ mn_note }}</span>{% endif %}
+      {{ mn_bar }}
+      <div class="flex flex--row gap--xlarge">
+        <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_full }}</span><span class="value value--xsmall lg:value--small">{{ mn_full_date }} · {{ mn_full_time }}</span></div>
+        <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_new }}</span><span class="value value--xsmall lg:value--small">{{ mn_new_date }} · {{ mn_new_time }}</span></div>
+      </div>
+    </div>
+  </div>
+  {{ mn_strip }}
+</div>
+{% else %}
+{{ mn_empty }}
+{% endif %}
+{{ mn_title_bar }}
