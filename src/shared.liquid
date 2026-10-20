@@ -19,7 +19,7 @@
   {% assign mn_w_lit = "beleuchtet" %}{% assign mn_w_age = "Tage alt" %}{% assign mn_w_days = "Tage" %}
   {% assign mn_w_no_rise = "Heute kein Mondaufgang" %}{% assign mn_w_no_set = "Heute kein Monduntergang" %}
   {% assign mn_w_up = "Den ganzen Tag über dem Horizont" %}{% assign mn_w_down = "Den ganzen Tag unter dem Horizont" %}
-  {% assign mn_w_title = "Mond" %}{% assign mn_w_supermoon = "Supermond" %}
+  {% assign mn_w_title = "Mondaufgang" %}{% assign mn_w_supermoon = "Supermond" %}
 {% else %}
   {% assign mn_wd = "Mon,Tue,Wed,Thu,Fri,Sat,Sun" | split: "," %}
   {% assign mn_mon = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec" | split: "," %}
@@ -29,7 +29,7 @@
   {% assign mn_w_lit = "lit" %}{% assign mn_w_age = "days old" %}{% assign mn_w_days = "days" %}
   {% assign mn_w_no_rise = "No moonrise today" %}{% assign mn_w_no_set = "No moonset today" %}
   {% assign mn_w_up = "Above the horizon all day" %}{% assign mn_w_down = "Below the horizon all day" %}
-  {% assign mn_w_title = "Moon" %}{% assign mn_w_supermoon = "Supermoon" %}
+  {% assign mn_w_title = "Moonrise" %}{% assign mn_w_supermoon = "Supermoon" %}
 {% endif %}
 
 {% capture mn_phase %}{% if mn_lang == "de" %}{% case moon.phase %}
