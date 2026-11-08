@@ -74,7 +74,7 @@
 {% endif %}
 {% capture mn_title_bar %}
   <div class="title_bar">
-    <svg class="image mn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3a9 9 0 1 0 6 15.7A9.5 9.5 0 0 1 15 3z" fill="currentColor"/></svg>
+    <svg class="image w--6 h--6" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3a9 9 0 1 0 6 15.7A9.5 9.5 0 0 1 15 3z" fill="currentColor"/></svg>
     <span class="title">{{ mn_w_title }}</span>
     <span class="instance">{{ mn_place }}</span>
   </div>
@@ -82,8 +82,8 @@
 
 {% comment %} The moon: the dark side is the Framework's gray (dithered where a screen has no gray), the lit side drawn over it. {% endcomment %}
 {% capture mn_disc %}
-  <div class="mn-disc mn-disc--main relative rounded--full bg--gray-30">
-    <svg class="mn-disc__svg absolute" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ moon.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="49.2"/></svg>
+  <div class="mn-disc mn-disc--main relative flex-none rounded--full bg--gray-30">
+    <svg class="mn-disc__svg absolute inset--0 w--full h--full" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ moon.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="49.2"/></svg>
   </div>
 {% endcapture %}
 
@@ -104,9 +104,9 @@
 {% capture mn_strip %}
   <div class="flex flex--row flex--between w--full gap--none mn-strip">
     {% for mn_d in moon.days %}
-      <div class="flex flex--col gap--xsmall mn-strip__day">
-        <div class="mn-disc mn-disc--small relative rounded--full bg--gray-30">
-          <svg class="mn-disc__svg absolute" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
+      <div class="flex flex--col flex--center-x gap--xsmall">
+        <div class="mn-disc mn-disc--small relative flex-none rounded--full bg--gray-30">
+          <svg class="mn-disc__svg absolute inset--0 w--full h--full" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
         </div>
         <span class="label label--small{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
         <span class="label label--small">↑ {% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
@@ -119,7 +119,7 @@
 {% comment %} No location (or the transform failed): a sleeping moon and one line. {% endcomment %}
 {% capture mn_empty %}
   <div class="layout layout--col layout--center">
-    <svg class="mn-empty" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 8a24 24 0 1 0 16 41A26 26 0 0 1 40 8z"/><path d="M28 34q3 3 6 0"/><path d="M48 12h6l-6 7h6"/></svg>
+    <svg class="w--24 h--24" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 8a24 24 0 1 0 16 41A26 26 0 0 1 40 8z"/><path d="M28 34q3 3 6 0"/><path d="M48 12h6l-6 7h6"/></svg>
     <span class="title">{% if mn_lang == "de" %}Der Mond braucht einen Ort{% else %}The moon needs a place{% endif %}</span>
     <span class="description">{% if mn_lang == "de" %}Wähle in den Einstellungen deinen Standort.{% else %}Choose your location in the plugin settings.{% endif %}</span>
   </div>
@@ -127,8 +127,8 @@
 
 <style>
   /* bg-- classes set their own text colour: the rim takes the page's ink again. */
-  .mn-disc.mn-disc{flex:none;color:inherit}
-  .mn-disc__svg{inset:0;width:100%;height:100%;overflow:visible}
+  .mn-disc.mn-disc{color:inherit}
+  .mn-disc__svg{overflow:visible}
   .mn-lit{fill:#fff}
   .mn-rim{fill:none;stroke:currentColor;stroke-width:1.6}
   .mn-disc--small{width:30px;height:30px}
@@ -155,7 +155,4 @@
   .mn-bar__up{top:5px;bottom:5px}
   .mn-bar__now{height:9px}
   .mn-bar__now svg{top:1px;width:12px;height:8px;transform:translateX(-50%)}
-  .mn-icon{width:24px;height:24px}
-  .mn-empty{width:96px;height:96px}
-  .mn-strip__day{align-items:center}
 </style>
