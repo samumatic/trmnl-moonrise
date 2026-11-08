@@ -91,10 +91,10 @@
 {% capture mn_bar %}
   <div class="mn-day w--full">
     <div class="mn-bar relative w--full">
-      {% for mn_s in moon.night %}<div class="mn-bar__night absolute bg--gray-60" style="left:{{ mn_s[0] }}%;width:{{ mn_s[1] }}%"></div>{% endfor %}
+      {% for mn_s in moon.night %}<div class="absolute top--0 bottom--0 bg--gray-60" style="left:{{ mn_s[0] }}%;width:{{ mn_s[1] }}%"></div>{% endfor %}
       {% for mn_s in moon.up %}<div class="mn-bar__up absolute bg--black" style="left:{{ mn_s[0] }}%;width:{{ mn_s[1] }}%"></div>{% endfor %}
     </div>
-    <div class="mn-bar__now relative w--full"><svg class="absolute" style="left:{{ moon.now_pct }}%" viewBox="0 0 10 8" aria-hidden="true"><path d="M5 0L10 8H0Z" fill="currentColor"/></svg></div>
+    <div class="mn-bar__now relative w--full h--[9px]"><svg class="absolute" style="left:{{ moon.now_pct }}%" viewBox="0 0 10 8" aria-hidden="true"><path d="M5 0L10 8H0Z" fill="currentColor"/></svg></div>
     <div class="flex flex--row flex--between w--full gap--none">
       <span class="label label--small">0</span><span class="label label--small">6</span><span class="label label--small">12</span><span class="label label--small">18</span><span class="label label--small">24</span>
     </div>
@@ -105,12 +105,12 @@
   <div class="flex flex--row flex--between w--full gap--none mn-strip">
     {% for mn_d in moon.days %}
       <div class="flex flex--col flex--center-x gap--xsmall">
-        <div class="mn-disc mn-disc--small relative flex-none rounded--full bg--gray-30">
+        <div class="mn-disc mn-disc--small relative flex-none w--[30px] h--[30px] lg:w--[44px] lg:h--[44px] rounded--full bg--gray-30">
           <svg class="mn-disc__svg absolute inset--0 w--full h--full" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
         </div>
         <span class="label label--small{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
-        <span class="label label--small">↑ {% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
-        <span class="label label--small">↓ {% if mn_d.set %}{{ mn_d.set[mn_t] }}{% else %}–{% endif %}</span>
+        <span class="label label--small"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0L10 5L8.8 6.2L5.85 3.25V12H4.15V3.25L1.2 6.2L0 5Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
+        <span class="label label--small"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 12L10 7L8.8 5.8L5.85 8.75V0H4.15V8.75L1.2 5.8L0 7Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.set %}{{ mn_d.set[mn_t] }}{% else %}–{% endif %}</span>
       </div>
     {% endfor %}
   </div>
@@ -126,14 +126,20 @@
 {% endcapture %}
 
 <style>
+  /* Custom CSS only where Framework 3.4 has no class; each block says what is missing. */
   /* bg-- classes set their own text colour: the rim takes the page's ink again. */
   .mn-disc.mn-disc{color:inherit}
+  /* SVG strokes: the Framework has no fill/stroke classes. overflow keeps the rim's stroke from being clipped at the edge. */
   .mn-disc__svg{overflow:visible}
+  /* The lit side stays white in dark mode too: Framework colours (text--white) swap there and would draw a full moon black. */
   .mn-lit{fill:#fff}
   .mn-rim{fill:none;stroke:currentColor;stroke-width:1.6}
-  .mn-disc--small{width:30px;height:30px}
   .mn-disc--small .mn-rim{stroke-width:4}
+  /* Rise/set arrows sized to the label's font: the pixel fonts lack arrow glyphs in some bundles, and Framework sizes are fixed px. */
+  .mn-arrow{display:inline;width:.6em;height:.75em;vertical-align:baseline}
+  /* No text no-wrap class; "4:04 PM" must not break between time and suffix. */
   .mn-time{white-space:nowrap}
+  /* Moon sizes per view and screen: most are above w--[128px], the largest arbitrary size, and they form one table. */
   .view--full .mn-disc--main{width:230px;height:230px}
   .view--half_horizontal .mn-disc--main{width:150px;height:150px}
   .view--half_vertical .mn-disc--main{width:170px;height:170px}
@@ -146,13 +152,12 @@
   .screen--lg.screen--portrait .view--half_horizontal .mn-disc--main{width:170px;height:170px}
   .screen--lg .view--half_vertical .mn-disc--main{width:250px;height:250px}
   .screen--lg .view--quadrant .mn-disc--main{width:170px;height:170px}
-  .screen--lg .mn-disc--small{width:44px;height:44px}
   .screen--portrait .view--quadrant .mn-disc--main{width:90px;height:90px}
   .screen--lg.screen--portrait .view--quadrant .mn-disc--main{width:150px;height:150px}
-  .screen--portrait .view--full .mn-info,.screen--portrait .view--quadrant .mn-info{flex-grow:0}
+  /* Day bar: Framework outline has a fixed 8px radius and progress-bar shows one segment, this bar needs square ends and several. */
   .mn-bar{height:18px;outline:2px solid currentColor;outline-offset:-2px;overflow:hidden}
-  .mn-bar__night{top:0;bottom:0}
+  /* Moon-up segments inset 5px: off the top--N 4px scale, and top--[Npx] has no effect. */
   .mn-bar__up{top:5px;bottom:5px}
-  .mn-bar__now{height:9px}
+  /* Now marker centred on its position: no transform utility. */
   .mn-bar__now svg{top:1px;width:12px;height:8px;transform:translateX(-50%)}
 </style>

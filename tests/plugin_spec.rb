@@ -77,6 +77,16 @@ RSpec.describe 'Moonrise & Moonset' do
       expect(en.text).to include('Waxing Gibbous', 'Moonrise', '4:04', '12:17', 'PM', 'Mon, Oct 26', '66% lit')
     end
 
+    it 'keeps a long location name inside the title bar' do
+      fields = custom_fields.merge('language' => 'en', 'location_name' => 'San Cristóbal de las Casas, Chiapas, Mexico')
+      %w[full half_horizontal half_vertical quadrant].each do |view|
+        %w[og_plus v2].each do |device|
+          screen = trmnl.render(view:, device:, now:, mocks:, variables:, custom_fields: fields)
+          expect(screen).to have_no_problems.and(have_no_overlapping_text)
+        end
+      end
+    end
+
     it 'follows an explicit time format' do
       screen = trmnl.render(view: 'full', device: 'og_plus', now:, mocks:, variables:,
                             custom_fields: custom_fields.merge('language' => 'en', 'time_format' => '24'))
