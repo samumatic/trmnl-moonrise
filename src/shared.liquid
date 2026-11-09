@@ -110,9 +110,9 @@
         <div class="mn-disc mn-disc--small relative flex-none w--[30px] h--[30px] lg:w--[44px] lg:h--[44px] rounded--full bg--gray-30">
           <svg class="mn-disc__svg absolute inset--0 w--full h--full" viewBox="0 0 100 100" aria-hidden="true"><path class="mn-lit" d="{{ mn_d.disc }}"/><circle class="mn-rim" cx="50" cy="50" r="48"/></svg>
         </div>
-        <span class="label label--small{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
-        <span class="label label--small"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0L10 5L8.8 6.2L5.85 3.25V12H4.15V3.25L1.2 6.2L0 5Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
-        <span class="label label--small"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 12L10 7L8.8 5.8L5.85 8.75V0H4.15V8.75L1.2 5.8L0 7Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.set %}{{ mn_d.set[mn_t] }}{% else %}–{% endif %}</span>
+        <span class="label label--small lg:landscape:label--large{% if mn_d.phase == 'full' or mn_d.phase == 'new' %} label--inverted{% endif %}">{{ mn_wd[mn_d.wd] }}</span>
+        <span class="label label--small lg:landscape:label--large"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0L10 5L8.8 6.2L5.85 3.25V12H4.15V3.25L1.2 6.2L0 5Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.rise %}{{ mn_d.rise[mn_t] }}{% else %}–{% endif %}</span>
+        <span class="label label--small lg:landscape:label--large"><svg class="mn-arrow" viewBox="0 0 10 12" aria-hidden="true"><path d="M5 12L10 7L8.8 5.8L5.85 8.75V0H4.15V8.75L1.2 5.8L0 7Z" fill="currentColor"/></svg>&nbsp;{% if mn_d.set %}{{ mn_d.set[mn_t] }}{% else %}–{% endif %}</span>
       </div>
     {% endfor %}
   </div>

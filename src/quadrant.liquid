@@ -5,9 +5,10 @@
     <span class="title lg:title--large">{{ mn_phase }}</span>
     <span class="description lg:description--large">{{ mn_detail_short }}</span>
     <div class="flex flex--row gap--medium">
-      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_rise_short }}</span><span class="value value--xsmall lg:value--small value--tnums mn-time">{{ mn_rise }}</span></div>
-      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_set_short }}</span><span class="value value--xsmall lg:value--small value--tnums mn-time">{{ mn_set }}</span></div>
+      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_rise_short }}</span><span class="value value--xsmall lg:value--small lg:portrait:value--large value--tnums mn-time">{{ mn_rise }}</span></div>
+      <div class="flex flex--col flex--left gap--none"><span class="label label--small">{{ mn_w_set_short }}</span><span class="value value--xsmall lg:value--small lg:portrait:value--large value--tnums mn-time">{{ mn_set }}</span></div>
     </div>
+    <div class="hidden lg:portrait:visible w--full">{{ mn_bar }}</div>
   </div>
 </div>
 {% else %}
