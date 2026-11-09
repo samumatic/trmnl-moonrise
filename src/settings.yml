@@ -7,7 +7,7 @@ polling_verb: get
 framework_version: latest
 serverless_language: python
 refresh_interval_floor: '30'
-polling_url: "{%- assign mn_lat = lat_lon | default: \"52.5200,13.4050\" | split: \",\" | first | strip -%}{%- assign mn_lon = lat_lon | default: \"52.5200,13.4050\" | split: \",\" | last | strip -%}{%- assign mn_tz = trmnl.user.time_zone_iana | default: \"auto\" | url_encode -%}https://api.open-meteo.com/v1/forecast?latitude={{ mn_lat }}&longitude={{ mn_lon }}&daily=sunrise,sunset,daylight_duration&timezone={{ mn_tz }}&forecast_days=2&timeformat=unixtime"
+polling_url: '{%- assign mn_lat = lat_lon | default: "52.5200,13.4050" | split: "," | first | strip -%}{%- assign mn_lon = lat_lon | default: "52.5200,13.4050" | split: "," | last | strip -%}{%- assign mn_tz = trmnl.user.time_zone_iana | default: "auto" | url_encode -%}https://api.open-meteo.com/v1/forecast?latitude={{ mn_lat }}&longitude={{ mn_lon }}&daily=sunrise,sunset,daylight_duration&timezone={{ mn_tz }}&forecast_days=2&timeformat=unixtime'
 polling_headers: ''
 polling_body: ''
 id: 535892
