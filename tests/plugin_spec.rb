@@ -95,6 +95,16 @@ RSpec.describe 'Moonrise & Moonset' do
     end
   end
 
+  it 'credits Open-Meteo next to the night it draws' do
+    %w[full half_horizontal half_vertical].each do |view|
+      screen = trmnl.render(view:, device: 'og_plus', now:, mocks:, variables:, custom_fields:)
+      expect(screen.text).to include('Open-Meteo.com')
+    end
+    down = trmnl.render(view: 'full', device: 'og_plus', now:, variables:, custom_fields:,
+                        mocks: { 'https://api.open-meteo.com/*' => { status: 500, body: '' } })
+    expect(down.text).not_to include('Open-Meteo')
+  end
+
   it 'still draws the moon without the sun when Open-Meteo is down' do
     m = moon(mocks: { 'https://api.open-meteo.com/*' => { status: 500, body: '' } })
     expect(m['rise']['t24']).to eq('16:04')

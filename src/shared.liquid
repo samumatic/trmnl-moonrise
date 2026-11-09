@@ -98,6 +98,8 @@
     <div class="flex flex--row flex--between w--full gap--none">
       <span class="label label--small">0</span><span class="label label--small">6</span><span class="label label--small">12</span><span class="label label--small">18</span><span class="label label--small">24</span>
     </div>
+    {% comment %} Open-Meteo's CC BY 4.0 licence asks for credit next to its data: the night in this bar. {% endcomment %}
+    {% if moon.night %}<div class="flex flex--right w--full"><span class="label label--small">Open-Meteo.com</span></div>{% endif %}
   </div>
 {% endcapture %}
 
