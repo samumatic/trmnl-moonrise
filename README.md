@@ -2,7 +2,7 @@
 
 # Moonrise & Moonset
 
-When the moon rises and sets today at your location, for [TRMNL](https://trmnl.com) e-paper displays: a drawn moon in its current phase, a bar across the day showing when the moon is up and when it is night, the next full and new moon, and the moon for the coming week.
+When the moon rises and sets today at your location, for [TRMNL](https://trmnl.com) e-paper displays: a drawn moon in its current phase, a bar across the day showing when the moon is up and when it is night, the next full and new moon, and moonrise and moonset for the coming week.
 
 ![Full layout](docs/full.png)
 
